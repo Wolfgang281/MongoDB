@@ -1,0 +1,11 @@
+[
+  {
+    "name": "varun",
+    "age": 34,
+    "skills": [],
+    "salary": 123.345,
+    "isMarried": true,
+    "address": {},
+    "comm": null
+  }
+]
