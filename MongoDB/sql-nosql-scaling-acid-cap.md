@@ -152,7 +152,7 @@ let myLaptopUpgraded = {
 
 ```mermaid
 graph TD
-    A["Server\nRAM: 8GB\nStorage: 512GB"] -->|"Vertical Scale (Upgrade)"| B["Same Server\nRAM: 16GB\nStorage: 1TB"]
+    A["Server RAM: 8GB Storage: 512GB"] -->|"Vertical Scale (Upgrade)"| B["Same Server RAM: 16GB Storage: 1TB"]
 ```
 
 **Pros:** Simple, no code changes needed, no distributed complexity
@@ -174,10 +174,10 @@ let myNewLaptop = { ram: 8, storage: 512 }; // new machine added to the pool
 
 ```mermaid
 graph TD
-    A["Server 1\n8GB RAM"] --- Data
-    B["Server 2\n8GB RAM"] --- Data
-    C["Server 3\n8GB RAM"] --- Data
-    Data["Shared/Replicated\nData Layer"]
+    A["Server 1 8GB RAM"] --- Data
+    B["Server 2 8GB RAM"] --- Data
+    C["Server 3 8GB RAM"] --- Data
+    Data["Shared/Replicated Data Layer"]
 ```
 
 **Pros:** No theoretical limit (keep adding machines), no downtime, highly available, cost-effective with commodity hardware
@@ -249,10 +249,10 @@ ACID is the set of properties that **SQL (relational) databases** guarantee for 
 
 ```mermaid
 graph TD
-    ACID --> A["Atomicity\n(All or Nothing)"]
-    ACID --> C["Consistency\n(Valid State Always)"]
-    ACID --> I["Isolation\n(Concurrent Transactions\ndon't interfere)"]
-    ACID --> D["Durability\n(Persisted after commit)"]
+    ACID --> A["Atomicity (All or Nothing)"]
+    ACID --> C["Consistency (Valid State Always)"]
+    ACID --> I["Isolation (Concurrent Transactions don't interfere)"]
+    ACID --> D["Durability (Persisted after commit)"]
 ```
 
 ---
@@ -329,9 +329,9 @@ BASE is the transaction model used by most **NoSQL databases**. It is a relaxed 
 
 ```mermaid
 graph TD
-    BASE --> BA["Basically Available\n(System always responds,\neven if data is stale)"]
-    BASE --> SS["Soft State\n(Data can change\nwithout user input)"]
-    BASE --> EC["Eventually Consistent\n(All nodes will be in sync\neventually)"]
+    BASE --> BA["Basically Available (System always responds, even if data is stale)"]
+    BASE --> SS["Soft State (Data can change without user input)"]
+    BASE --> EC["Eventually Consistent (All nodes will be in sync eventually)"]
 ```
 
 ---
@@ -381,10 +381,10 @@ Eventually → everyone sees the same tweet
 
 ```mermaid
 graph TD
-    CAP["CAP Theorem\n(Pick 2 of 3)"]
-    CAP --> C["C — Consistency\nEvery read gets the\nmost recent write"]
-    CAP --> A["A — Availability\nEvery request gets\na response (no timeout)"]
-    CAP --> P["P — Partition Tolerance\nSystem works even if\nnetwork partitions occur\n(MUST always be chosen)"]
+    CAP["CAP Theorem (Pick 2 of 3)"]
+    CAP --> C["C — Consistency Every read gets the most recent write"]
+    CAP --> A["A — Availability Every request gets a response (no timeout)"]
+    CAP --> P["P — Partition Tolerance System works even if network partitions occur (MUST always be chosen)"]
 ```
 
 > **Critical rule:** In a real distributed system, **network partitions WILL happen** (servers lose connection). So **P (Partition Tolerance) is always required**. This means you actually choose between:
