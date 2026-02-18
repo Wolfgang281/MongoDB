@@ -165,3 +165,19 @@ let myNewLaptop = {
 //~ "27017": port number
 
 //! mongodb compass is a GUI (graphical user interface) through which we can interact with database without writing any piece of code (we can interact visually)
+
+//! shell () => it is a CLI (command line interface). shell/interface which acts as a medium between user and database. this is built using javascript
+
+//! gui --> no commands required
+//! cli --> commands required (more functionality)
+
+//? to enter the mongo shell (mongosh) >> open cmd and type "mongosh" >> test should be the prompt
+
+//~ to close/start the mongodb server >> open cmd as admin
+//! net stop mongodb -> stop
+//! net start mongodb -> start
+
+//! sc query mongodb -> command to check status of mongodb server
+
+//? mongodb://127.0.0.1:27017(shell): "127.0.0.1": ip address
+//? mongodb://localhost:27017(compass) : "localhost": domain name

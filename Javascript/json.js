@@ -6,4 +6,3 @@
 //! datatypes -> undefined, functions and date are not allowed in json
 
 //! BSON: binary JSON.
-//TODO:
