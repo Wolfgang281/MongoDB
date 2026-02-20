@@ -10,7 +10,7 @@
 //~ use database-name (if database-name is already present, then it will be switched, otherwise a new db will be created)
 //& example -> use library
 //& 1) we can insert a collection
-//& 2) we can insert a document
+//& 2) we can insert a document : db.collectionName.insertOne/Many()
 
 //? 3) to create a collection
 //~ db.createCollection("collection-name")
