@@ -199,3 +199,93 @@ db.emp.find(
   { $and: [{ age: { $gt: 30 } }, { deptNo: 20 }] },
   { age: 1, deptNo: 1, _id: 0 },
 );
+
+//! display all the names details of emp who are having performance rating greater than 4.3
+db.emp.find({ "performance.rating": { $gt: 4.3 } }, { empName: 1, _id: 0 });
+
+//? in order to access nested properties use double quotes
+
+//~ fetching based on nested properties
+//! display all the names and last review date of emp who are having performance rating greater than 4.3
+db.emp.find(
+  { "performance.rating": { $gt: 4.3 } },
+  { empName: 1, _id: 0, "performance.lastReviewDate": 1 },
+);
+
+//~ fetching based on dates
+//! ISO date format --> YYYY-MM-DD T HH:mm:ss.ms Z (+5 30)
+//? utc --> it is based on the region
+//? t -> separator (separates date from time)
+//? Z -> offset value
+
+//! find all the emp who were hired after 31 jan 1982
+db.emp.find(
+  { hireDate: { $gt: ISODate("1982-01-31") } },
+  { hireDate: 1, _id: 0 },
+);
+//? while fetching based on dates we have to use this format -> ISODate("YYYY-MM-DD")
+
+//~ fetching based on _id
+//! fetch the details of emp whose id is 66a23517b5c6990483c4e49b
+db.emp.findOne({ _id: ObjectId("66a23517b5c6990483c4e49b") });
+//? while fetching based on _id use this format -> ObjectId("12 bytes id")
+//? size should be exactly of 12 bytes
+
+//~ fetching based on arrays
+db.emp.find({ skills: "sql" }, { skills: 1, _id: 0 });
+db.emp.find({ skills: "sql", skills: "python" }, { skills: 1, _id: 0 });
+db.emp.find({ skills: ["sql", "python"] }, { skills: 1, _id: 0 });
+
+db.emp.find(
+  { $and: [{ skills: "sql" }, { skills: "python" }] },
+  { skills: 1, _id: 0 },
+);
+
+//! ==================================== array op =====================
+//& $all, $elemMatch, $size
+
+//& this will fetch the documents which matches all the given values
+//? syntax for $all
+// filter part -> { fieldName: {$all: [v1, v2, v3,.....]} }
+
+db.emp.find({ skills: { $all: ["sql", "python"] } }, { skills: 1, _id: 0 });
+db.emp.find(
+  { skills: { $all: ["html", "javascript"] } },
+  { skills: 1, _id: 0 },
+);
+
+//! fetch all the docs who are having skills as sql or python
+db.emp.find({ skills: { $in: ["sql", "python"] } }, { skills: 1, _id: 0 });
+
+//? we can use $in on arrays and as well as on strings, numbers, etc whereas $all can only be used on arrays
+
+//& this will fetch the documents based on the length of the array
+//? syntax for $size
+// filter part -> { fieldName: { $size: +ve INT } }
+
+//! fetch all the emp who are having only two skills
+db.emp.find({ skills: { $size: 2 } }, { skills: 1, _id: 0 });
+
+let cart = [
+  { name: "phone", price: 1200, qty: 2 },
+  { name: "laptop", price: 39999, qty: 1 },
+];
+
+//TODO:
+//& this will fetch the documents based on the length of the array
+//? syntax for $elemMatch
+// filter part -> { fieldname: { $elemMatch: { conditions } } })
+db.collectionName.find({ fieldname: { $elemMatch: { conditions } } });
+db.prods.find({ cart: { $elemMatch: { name: "phone" } } });
+
+//! =============================== element
+//? Element
+//& $exists, $type
+
+//& this will fetch the documents based whether the field is present or not
+//? syntax for $elemMatch
+// filter part -> { fieldname: { $exists: { boolean } } })
+
+//& this will fetch the documents based on the datatype of the field
+//? syntax for $type
+// filter part -> { fieldname: { $type: { "datatype" } } })
