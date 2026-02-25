@@ -271,12 +271,57 @@ let cart = [
   { name: "laptop", price: 39999, qty: 1 },
 ];
 
-//TODO:
 //& this will fetch the documents based on the length of the array
-//? syntax for $elemMatch
+
+//? syntax for $elemMatch: it is used when we want to apply conditions on array of objects
 // filter part -> { fieldname: { $elemMatch: { conditions } } })
 db.collectionName.find({ fieldname: { $elemMatch: { conditions } } });
 db.prods.find({ cart: { $elemMatch: { name: "phone" } } });
+
+db.survey.insertMany([
+  {
+    _id: 1,
+    results: [
+      { product: "abc", score: 10 },
+      { product: "xyz", score: 5 },
+    ],
+  },
+  {
+    _id: 2,
+    results: [
+      { product: "abc", score: 8 },
+      { product: "xyz", score: 7 },
+    ],
+  },
+  {
+    _id: 3,
+    results: [
+      { product: "abc", score: 7 },
+      { product: "xyz", score: 8 },
+    ],
+  },
+  {
+    _id: 4,
+    results: [
+      { product: "abc", score: 7 },
+      { product: "def", score: 8 },
+    ],
+  },
+  { _id: 5, results: { product: "xyz", score: 7 } },
+]);
+
+// ! fetch all the docs in which product "def" is present
+db.survey.find({
+  results: {
+    $elemMatch: { $and: [{ product: "def" }, { score: { $gt: 7 } }] },
+  },
+});
+db.survey.find({
+  results: {
+    $elemMatch: { product: "def" },
+    score: { $gt: 7 },
+  },
+});
 
 //! =============================== element
 //? Element
@@ -289,3 +334,236 @@ db.prods.find({ cart: { $elemMatch: { name: "phone" } } });
 //& this will fetch the documents based on the datatype of the field
 //? syntax for $type
 // filter part -> { fieldname: { $type: { "datatype" } } })
+
+//! ================= evaluation ===================
+//?1)  $regex -> regular expression: for pattern matching and it only works on string
+// syntax for $regex ->
+//! filter part -> {fieldName: { $regex: /pattern/ }}
+//! filter part -> {fieldName: { $regex: "pattern" }}
+
+//~ 1) display all the emp names who are having letter "a" in their name
+db.emp.find({ empName: { $regex: /a/ } }, { empName: 1, _id: 0 });
+
+//~ 2) display all the emp names who are having letters "ar" in their name
+db.emp.find({ empName: { $regex: /ar/ } }, { empName: 1, _id: 0 });
+
+//? /letters/ : by passing this, mongodb will look for the docs whose name contains the letters in the same order no matter the position
+
+//~ 3) display all the emp names who are having letter "a" as the first char in their name
+db.emp.find({ empName: { $regex: /^a/ } }, { empName: 1, _id: 0 });
+
+//& cap symbol -> shift + 6 (^) used to match the pattern from the starting of the string
+
+//~ 4) display all the emp names who are having letter "n" as the last char in their name
+db.emp.find({ empName: { $regex: /n$/ } }, { empName: 1, _id: 0 });
+
+//& dollar symbol -> shift + 4 ($) used to match the pattern from the ending of the string
+
+//~ 5) display all the emp names who are having letter "n" as the second last char in their name
+db.emp.find({ empName: { $regex: /n.$/ } }, { empName: 1, _id: 0 });
+db.emp.find({ empName: { $regex: /^..l/ } }, { empName: 1, _id: 0 });
+//& dot symbol (.) is used to skip the particular digit/character
+
+//~ 6) display all the emp names who having exactly 4 letters in their name
+db.emp.find({ empName: { $regex: /^\w{4}$/ } }, { empName: 1, _id: 0 });
+db.emp.find({ empName: { $regex: /^....$/ } }, { empName: 1, _id: 0 });
+
+//& {INT} -> defines the length of the pattern
+
+//~ 7) display all the emp names who having first letter as "a" and last as "s"
+db.emp.find({ empName: { $regex: /^a.*s$/ } }, { empName: 1, _id: 0 });
+//& * -> skips n chars
+
+//? 2) $expr -> a) it is used to write aggregation queries
+//TODO:
+//? b) it is used to compare the values within the document
+
+// syntax for $expr ->
+//! filter part -> {$expr: { $CO: ["f1", "f2"] }}
+
+//! find all the emp who are having comm > bonus
+// db.emp.find({ $expr: { $gt: [20, 10] } }); //? 20 > 10
+// db.emp.find({ $expr: { $gt: [10, 20] } }); //? 10 > 20
+
+db.emp.find(
+  { $expr: { $gt: ["$comm", "$bonus"] } },
+  { bonus: 1, comm: 1, _id: 0 },
+);
+//? whenever we are passing mongodb fields as a value, we need to use double quotes and prefix it with $.
+
+//! display all the emp names, deptNo and age whose age is less than deptNo
+db.emp.find(
+  { $expr: { $lt: ["$age", "$deptNo"] } },
+  { empName: 1, deptNo: 1, age: 1, _id: 0 },
+);
+
+//~ ===================== updateOne/Many() ==============
+// {filter}, {new data}, {options} -> upsert/arrayFilters
+//? update the existing value
+//? update the existing key
+//? add a new key-value pair
+//? delete a key-value pair
+//& cannot edit _id both key and value
+
+//! Field Update Operators ($set, $unset, $rename, setOnInsert)
+//? $set : it is used to update the existing value when the field is present and if not then it will add a new key-value pair
+// syntax -> {new data/updation part}
+// { $set: { fieldName: "value", fN2: value2, .......... } }
+
+db.dept.updateOne(
+  { dept: 10 },
+  {
+    $set: {
+      loc: "NEW YORK",
+      budget: 78723,
+      floor: 56,
+    },
+  },
+);
+
+let resp = {
+  acknowledged: true,
+  // insertedId: null,
+  matchedCount: 1,
+  modifiedCount: 1,
+  // upsertedCount: 0,
+};
+
+db.dept.updateOne(
+  { dept: 10 },
+  {
+    $set: { key5: "value5" },
+  }, //~ here a new key value pair will be added
+);
+
+//? $rename : it is used to update the existing key.
+// syntax -> {new data/updation part}
+// { $rename: { oldFieldName: "newFieldName"} }
+
+db.users.updateOne(
+  { "user-name": "Rajesh Kumar" },
+  { $rename: { email: "user-email" } },
+);
+
+//? $unset : it is used to delete a key-value pair.
+// syntax -> {new data/updation part}
+// { $unset: { fieldName: "",fieldName: "",fieldName: "",...} }
+db.users.updateOne(
+  { "user-name": "Rajesh Kumar" }, // filter
+  { $unset: { age: "" } }, // update
+);
+
+//? options -> upsert:true/false (default:false)
+db.users.updateOne(
+  { "user-name": "Rajesh Kumar" }, // filter
+  { $unset: { age: "" } }, // update
+);
+db.users.updateOne(
+  { "user-name": "Rajesh Kumar" }, // filter
+  { $unset: { age: "" } }, // update
+  { upsert: false },
+);
+
+//! scenario-1) when the filter condition gets matched
+//~ (when condition gets matched doc will get updated)
+//? a) upsert : true -> doc will get updated
+db.students.updateOne(
+  { email: "aman@gmail.com" },
+  { $set: { age: 18, k2: v2, k3: v3 } },
+  { upsert: true },
+);
+
+//? b) upsert : false (default) -> doc will get updated
+db.students.updateOne(
+  { email: "abc@gmail.com" },
+  { $set: { email: "aman@gmail.com" } },
+  { upsert: false },
+);
+
+//! scenario-2) when the filter condition does not get matched
+//? a) upsert : true -> doc will get inserted with the given values
+db.students.updateOne(
+  { email: "098@gmail.com", age: 34, phone: "876879898", isMarried: true },
+  { $set: { phone: 87688698 } },
+  { upsert: true },
+);
+
+//? b) upsert : false -> no updates is happening
+db.students.updateOne(
+  { email: "123@gmail.com" },
+  { $set: { phone: 87688698 } },
+  { upsert: false },
+);
+db.students.updateOne(
+  { email: "123@gmail.com" },
+  { $set: { phone: 87688698 } },
+);
+
+//? $setOnInsert: this is used to set the fields in a document whenever a new doc gets upserted. If no doc is upserted, this setOnInsert will not execute
+
+db.students.updateOne(
+  { email: "467@gmail.com" },
+  { $set: { phone: 87688698 }, $setOnInsert: { haveID: true } },
+);
+db.students.updateOne(
+  { email: "498798@gmail.com" },
+  { $set: { phone: 87688698 }, $setOnInsert: { haveID: true } },
+  { upsert: true },
+);
+
+db.students.updateOne(
+  { email: "aman@gmail.com" },
+  { $set: { age: 20 }, $setOnInsert: { haveID: true } },
+  { upsert: true },
+);
+
+//! class collection -> feesReceipt (old students)
+db.students.find({ username: "Priya Gupta" });
+db.students.find({ username: { $regex: /priya/i } });
+
+db.students.updateOne(
+  { username: { $regex: /priya/i } }, //~ "i" is for ignore
+  { $set: { feeReceipt: 16000 }, $setOnInsert: { id: 8 } },
+  { upsert: true },
+);
+//? here, if the student is present, then only feeReceipt will be updated
+//! and if the student is not present in db, then id will also be inserted
+
+db.students.updateOne(
+  { username: { $regex: /priya/i } },
+  { $set: { feeReceipt: 16000, id: 8 } },
+  { upsert: true },
+);
+//! here, if student is present or not id will be inserted
+
+db.students.updateOne(
+  { _id: ObjectId("6971e7d8fcb2b0e3f7735119") },
+  { $set: { subjects: "PCM" }, $setOnInsert: { _id: "12345" } },
+  { upsert: true },
+); //? error as _id is immutable
+
+//! $currentDate -> used to add the current date
+// updation part { $currentDate: { fieldName: true } }
+db.emp.find({ empName: { $regex: /^[sk]/ } }, { empName: 1, _id: 0 });
+
+db.emp.find(
+  { hireDate: { $lt: ISODate("1982-01-01") } },
+  { empName: 1, lastIncrement: 1, _id: 0 },
+);
+
+db.emp.updateMany(
+  { hireDate: { $lt: ISODate("1982-01-01") } },
+  {
+    $set: {
+      lastIncrement: new Date(),
+    },
+  },
+);
+db.emp.updateMany(
+  { hireDate: { $lt: ISODate("1982-01-01") } },
+  {
+    $currentDate: {
+      lastIncrement: true,
+    },
+  },
+);
