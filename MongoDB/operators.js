@@ -567,3 +567,146 @@ db.emp.updateMany(
     },
   },
 );
+
+//? Arithmetic / Field Manipulation
+//& $inc, $mul, $min, $max, $currentDate
+
+//! 1) $inc -> it is used to increment/decrement the amount by the specified value
+//~ syntax -> updation part {}
+// { $inc: {fieldName: +/-value }
+
+db.students.updateMany({ city: "Gurugram" }, { $inc: { age: -30 } });
+db.students.updateMany({ city: "Gurugram" }, { $inc: { age: 2 } });
+
+db.students.updateMany({ city: "Gurugram" }, { $inc: { salary: 2 } });
+// if the field is not present, then the field will be added with the specified value
+//! we cannot use null with $inc
+
+//! 2) $mul -> it is used to multiple the field by the specified value
+//~ syntax -> updation part {}
+// { $mul: {fieldName: +/-value }
+db.students.updateMany({}, { $mul: { age: 2 } });
+// if the field is not present, then the field will be added with the  value as 0
+
+//! 2) $max -> it is used to update the maximum value
+//~ syntax -> updation part {}
+// { $max: {fieldName: +/-value }
+/// IN ORDER TO PERFORM AN UPDATE OPERATION, PASS STRICTLY GREATER VALUE THAT IS STORED IN DB
+// in db we have 100 and we are passing 200 (update)
+// in db we have 100 and we are passing 99, 100 (no updates)
+
+db.students.updateOne({ city: "Gurugram" }, { $max: { bonus: 16 } });
+// if the field is not present, then the field will be added with the specified value
+
+//! 3) $min -> it is used to update the minimum value
+//~ syntax -> updation part {}
+// { $min: {fieldName: +/-value }
+/// IN ORDER TO PERFORM AN UPDATE OPERATION, PASS STRICTLY lower VALUE THAT IS STORED IN DB
+// in db we have 100 and we are passing 200, 100 (no-update)
+// in db we have 100 and we are passing 99 (updates)
+db.students.updateOne({ city: "Gurugram" }, { $min: { bonus: 16 } });
+// if the field is not present, then the field will be added with the specified value
+
+db.emp.find({ comm: null });
+db.students.updateMany({ city: "Gurugram" }, { $inc: { age: null } });
+db.students.updateOne({ city: "Gurugram" }, { $max: { bonus: null } });
+
+db.arrayUpdate.insertMany([
+  {
+    _id: 1,
+    name: "sri",
+    skills: ["mongodb", "sql", "nodejs"],
+  },
+  {
+    _id: 2,
+    name: "sirisha",
+    skills: ["postgres", "sql", "php"],
+  },
+  {
+    _id: 3,
+    name: "varun",
+    skills: ["python", "sql", "fast_api"],
+  },
+  {
+    _id: 4,
+    name: "ashwin",
+    skills: ["python", "django", "fast_api"],
+  },
+]);
+//! ================= Array Update Operators ====================
+
+//! $push -> this will add an element at the last of the array
+// { $push: {fieldName: "value" }
+
+db.arrayUpdate.updateOne({ _id: 1 }, { $push: { skills: "express" } });
+
+db.arrayUpdate.updateOne(
+  { _id: 2 },
+  { $push: { skills: [".net", "laravel"] } },
+);
+// it will create a nested array
+// we cannot specify a particular index of insertion
+
+db.arrayUpdate.updateOne({ _id: 1 }, { $push: { hobbies: "gaming" } });
+// if the field is not present, then the field will be created and the datatype will be an array
+
+//! 2) $push + $each -> using these two operators we can add multiple elements to an array and we can also specify the position ($each cannot be used without $push), sort the elements, slice the array.
+// { $push: {fieldName:{ $each: ["v1", "v2", ....] } }
+db.arrayUpdate.updateOne(
+  { _id: 2 },
+  { $push: { skills: [".net", "laravel"] } },
+);
+
+db.arrayUpdate.updateOne(
+  { _id: 3 },
+  { $push: { skills: { $each: [".net", "django", "ai/ml"] } } },
+);
+
+// to specify the index ($position, $slice, $sort) -> without $each we cannot use $position, $slice, $sort
+
+db.arrayUpdate.updateOne(
+  { _id: 4 },
+  { $push: { skills: { $each: ["html"] } } },
+);
+// if no position is specified then it will be added at last
+
+db.arrayUpdate.updateOne(
+  { _id: 2 },
+  { $push: { skills: { $each: ["react"], $sort: -1 } } },
+);
+
+db.arrayUpdate.updateOne(
+  { _id: 1 },
+  { $push: { skills: { $each: ["react"], $sort: 1 } } },
+);
+
+// sort : -1 -> in descending order
+// sort : 1 -> in ascending order
+
+db.arrayUpdate.updateOne(
+  { _id: 1 },
+  { $push: { skills: { $each: ["html"], $slice: -2 } } },
+);
+
+// $slice -> it will keep the given number of elements (from first or last)
+// $slice:3 -> it will keep the first 3 ele, rest will be removed
+// $slice:-3 -> it will keep the last 3 ele, rest will be removed
+
+//! 2) $addToSet -> using this we can only insert unique elements
+// { $addToSet: {fieldName:{ $each: ["v1", "v2", ....] } }
+
+// { $addToSet: {fieldName:"value" }
+
+db.arrayUpdate.updateOne({ _id: 1 }, { $addToSet: { skills: "express" } });
+
+db.arrayUpdate.updateOne(
+  { _id: 3 },
+  { $addToSet: { skills: { $each: [".net", "django", "ai/ml", "rest_api"] } } },
+);
+
+//! we cannot use $position, $slice, $sort with $addToSet
+
+db.arrayUpdate.updateOne(
+  { _id: 1 },
+  { $addToSet: { skills: { $each: ["react"], $position: 1 } } },
+);
