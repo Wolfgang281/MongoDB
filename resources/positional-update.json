@@ -1,0 +1,374 @@
+[
+  {
+    "_id": 1,
+    "name": "Arjun Mehta",
+    "role": "Full Stack Developer",
+    "department": "Engineering",
+    "skills": [
+      {
+        "name": "React",
+        "level": "expert",
+        "certified": false,
+        "yearsUsed": 4
+      },
+      {
+        "name": "Node.js",
+        "level": "intermediate",
+        "certified": true,
+        "yearsUsed": 2
+      },
+      {
+        "name": "MongoDB",
+        "level": "beginner",
+        "certified": false,
+        "yearsUsed": 0.5
+      }
+    ],
+    "projects": [
+      {
+        "name": "PaymentGateway",
+        "status": "active",
+        "bugs": 3,
+        "priority": "high"
+      },
+      {
+        "name": "AdminPanel",
+        "status": "completed",
+        "bugs": 0,
+        "priority": "low"
+      },
+      {
+        "name": "ChatModule",
+        "status": "active",
+        "bugs": 7,
+        "priority": "high"
+      }
+    ],
+    "reviews": [
+      { "quarter": "Q1-2024", "rating": 4, "bonus": 0, "approved": false },
+      { "quarter": "Q2-2024", "rating": 5, "bonus": 0, "approved": false }
+    ]
+  },
+  {
+    "_id": 2,
+    "name": "Priya Sharma",
+    "role": "Data Engineer",
+    "department": "Data",
+    "skills": [
+      {
+        "name": "Python",
+        "level": "expert",
+        "certified": true,
+        "yearsUsed": 6
+      },
+      {
+        "name": "Spark",
+        "level": "expert",
+        "certified": false,
+        "yearsUsed": 3
+      },
+      {
+        "name": "React",
+        "level": "beginner",
+        "certified": false,
+        "yearsUsed": 0.3
+      }
+    ],
+    "projects": [
+      {
+        "name": "ETLPipeline",
+        "status": "active",
+        "bugs": 1,
+        "priority": "high"
+      },
+      {
+        "name": "ReportingDashboard",
+        "status": "on-hold",
+        "bugs": 5,
+        "priority": "medium"
+      }
+    ],
+    "reviews": [
+      { "quarter": "Q1-2024", "rating": 5, "bonus": 0, "approved": false },
+      { "quarter": "Q2-2024", "rating": 4, "bonus": 0, "approved": false }
+    ]
+  },
+  {
+    "_id": 3,
+    "name": "Ravi Kumar",
+    "role": "DevOps Engineer",
+    "department": "Infrastructure",
+    "skills": [
+      {
+        "name": "Kubernetes",
+        "level": "expert",
+        "certified": true,
+        "yearsUsed": 4
+      },
+      {
+        "name": "Terraform",
+        "level": "intermediate",
+        "certified": false,
+        "yearsUsed": 2
+      },
+      {
+        "name": "Python",
+        "level": "beginner",
+        "certified": false,
+        "yearsUsed": 0.8
+      }
+    ],
+    "projects": [
+      {
+        "name": "CI-CD Overhaul",
+        "status": "active",
+        "bugs": 2,
+        "priority": "high"
+      },
+      {
+        "name": "K8s Migration",
+        "status": "active",
+        "bugs": 9,
+        "priority": "critical"
+      },
+      {
+        "name": "MonitoringSetup",
+        "status": "completed",
+        "bugs": 0,
+        "priority": "medium"
+      }
+    ],
+    "reviews": [
+      { "quarter": "Q1-2024", "rating": 3, "bonus": 0, "approved": false },
+      { "quarter": "Q2-2024", "rating": 4, "bonus": 0, "approved": false }
+    ]
+  },
+  {
+    "_id": 4,
+    "name": "Sneha Patel",
+    "role": "QA Engineer",
+    "department": "Quality",
+    "skills": [
+      {
+        "name": "Selenium",
+        "level": "expert",
+        "certified": true,
+        "yearsUsed": 5
+      },
+      {
+        "name": "Cypress",
+        "level": "intermediate",
+        "certified": false,
+        "yearsUsed": 1.5
+      },
+      {
+        "name": "Python",
+        "level": "intermediate",
+        "certified": true,
+        "yearsUsed": 2
+      }
+    ],
+    "projects": [
+      {
+        "name": "PaymentGateway",
+        "status": "active",
+        "bugs": 3,
+        "priority": "high"
+      },
+      {
+        "name": "MobileApp",
+        "status": "active",
+        "bugs": 12,
+        "priority": "critical"
+      }
+    ],
+    "reviews": [
+      { "quarter": "Q1-2024", "rating": 5, "bonus": 0, "approved": false },
+      { "quarter": "Q2-2024", "rating": 5, "bonus": 0, "approved": false }
+    ]
+  },
+  {
+    "_id": 5,
+    "name": "Kiran Nair",
+    "role": "Backend Developer",
+    "department": "Engineering",
+    "skills": [
+      { "name": "Java", "level": "expert", "certified": true, "yearsUsed": 7 },
+      {
+        "name": "Spring Boot",
+        "level": "expert",
+        "certified": true,
+        "yearsUsed": 5
+      },
+      {
+        "name": "MongoDB",
+        "level": "intermediate",
+        "certified": false,
+        "yearsUsed": 2
+      }
+    ],
+    "projects": [
+      {
+        "name": "AuthService",
+        "status": "completed",
+        "bugs": 0,
+        "priority": "high"
+      },
+      {
+        "name": "NotificationEngine",
+        "status": "active",
+        "bugs": 4,
+        "priority": "medium"
+      },
+      {
+        "name": "BillingSystem",
+        "status": "active",
+        "bugs": 6,
+        "priority": "critical"
+      }
+    ],
+    "reviews": [
+      { "quarter": "Q1-2024", "rating": 4, "bonus": 0, "approved": false },
+      { "quarter": "Q2-2024", "rating": 3, "bonus": 0, "approved": false }
+    ]
+  },
+  {
+    "_id": 6,
+    "name": "Divya Rao",
+    "role": "ML Engineer",
+    "department": "AI",
+    "skills": [
+      {
+        "name": "Python",
+        "level": "expert",
+        "certified": true,
+        "yearsUsed": 5
+      },
+      {
+        "name": "TensorFlow",
+        "level": "expert",
+        "certified": true,
+        "yearsUsed": 3
+      },
+      {
+        "name": "React",
+        "level": "beginner",
+        "certified": false,
+        "yearsUsed": 0.2
+      }
+    ],
+    "projects": [
+      {
+        "name": "RecommendationEngine",
+        "status": "active",
+        "bugs": 2,
+        "priority": "high"
+      },
+      {
+        "name": "FraudDetection",
+        "status": "on-hold",
+        "bugs": 0,
+        "priority": "critical"
+      }
+    ],
+    "reviews": [
+      { "quarter": "Q1-2024", "rating": 5, "bonus": 0, "approved": false },
+      { "quarter": "Q2-2024", "rating": 5, "bonus": 0, "approved": false }
+    ]
+  },
+  {
+    "_id": 7,
+    "name": "Amit Singh",
+    "role": "Frontend Developer",
+    "department": "Engineering",
+    "skills": [
+      { "name": "React", "level": "expert", "certified": true, "yearsUsed": 4 },
+      {
+        "name": "TypeScript",
+        "level": "expert",
+        "certified": false,
+        "yearsUsed": 3
+      },
+      {
+        "name": "Node.js",
+        "level": "beginner",
+        "certified": false,
+        "yearsUsed": 0.6
+      }
+    ],
+    "projects": [
+      {
+        "name": "CustomerPortal",
+        "status": "active",
+        "bugs": 5,
+        "priority": "high"
+      },
+      {
+        "name": "AdminPanel",
+        "status": "completed",
+        "bugs": 0,
+        "priority": "low"
+      },
+      {
+        "name": "MobileApp",
+        "status": "active",
+        "bugs": 8,
+        "priority": "critical"
+      }
+    ],
+    "reviews": [
+      { "quarter": "Q1-2024", "rating": 4, "bonus": 0, "approved": false },
+      { "quarter": "Q2-2024", "rating": 4, "bonus": 0, "approved": false }
+    ]
+  },
+  {
+    "_id": 8,
+    "name": "Meera Iyer",
+    "role": "Security Engineer",
+    "department": "Infrastructure",
+    "skills": [
+      {
+        "name": "Penetration Testing",
+        "level": "expert",
+        "certified": true,
+        "yearsUsed": 6
+      },
+      {
+        "name": "Python",
+        "level": "expert",
+        "certified": true,
+        "yearsUsed": 4
+      },
+      {
+        "name": "Kubernetes",
+        "level": "beginner",
+        "certified": false,
+        "yearsUsed": 0.4
+      }
+    ],
+    "projects": [
+      {
+        "name": "SecurityAudit",
+        "status": "completed",
+        "bugs": 0,
+        "priority": "critical"
+      },
+      {
+        "name": "BillingSystem",
+        "status": "active",
+        "bugs": 6,
+        "priority": "critical"
+      },
+      {
+        "name": "AuthService",
+        "status": "active",
+        "bugs": 1,
+        "priority": "high"
+      }
+    ],
+    "reviews": [
+      { "quarter": "Q1-2024", "rating": 3, "bonus": 0, "approved": false },
+      { "quarter": "Q2-2024", "rating": 4, "bonus": 0, "approved": false }
+    ]
+  }
+]

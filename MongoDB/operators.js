@@ -650,7 +650,7 @@ db.arrayUpdate.updateOne(
 db.arrayUpdate.updateOne({ _id: 1 }, { $push: { hobbies: "gaming" } });
 // if the field is not present, then the field will be created and the datatype will be an array
 
-//! 2) $push + $each -> using these two operators we can add multiple elements to an array and we can also specify the position ($each cannot be used without $push), sort the elements, slice the array.
+//! 2) $push + $each -> using these two operators we can add multiple elements to an array and we can also specify the position ($each cannot be used without $push), sort the elements, slice the array. (these are called modifiers -> $position. $sort and $slice)
 // { $push: {fieldName:{ $each: ["v1", "v2", ....] } }
 db.arrayUpdate.updateOne(
   { _id: 2 },
@@ -709,4 +709,179 @@ db.arrayUpdate.updateOne(
 db.arrayUpdate.updateOne(
   { _id: 1 },
   { $addToSet: { skills: { $each: ["react"], $position: 1 } } },
+);
+
+//! =============== to remove elements =============
+//? $pop, $pull, $pullAll
+
+//? 1)  $pop -> Removes the first (-1) or last (1) element from an array
+// { $pop: {fieldName: 1/-1} }
+db.arrayUpdate.updateOne({ _id: 1 }, { $pop: { skills: 1 } });
+//~ this will remove the element from the last
+//! only expects 1 and -1
+
+//? 2) $pull -> Removes all elements matching a specified condition.
+// { $pull: {fieldName:"value"} }
+// { $pull: {fieldName: { condition } } }
+
+//& regex -> { fieldName: { $regex: // } }
+
+db.arrayUpdate.updateOne({ _id: 2 }, { $pull: { skills: { $regex: /a/i } } });
+// with condition
+db.arrayUpdate.updateOne({ _id: 4 }, { $pull: { skills: "html" } });
+
+//? 3) $pullAll -> removes all the elements which are equals to the values
+db.arrayUpdate.updateOne({ _id: 4 }, { $pullAll: { skills: ["css", "js"] } });
+
+//! in mongodb, on arrays we can d the following things
+//? update the first matched occurrence -> "$"
+//? update the complete array
+//? update only the matched occurrence -> "$[variableName]"
+
+//! update the skills of emp from html to xml
+db.arrayUpdate.updateOne(
+  { _id: 3, skills: "sql" },
+  { $set: { "skills.$": "mongodb" } },
+);
+
+//? always pass the array filter condition in filter object, so that the "$" placeholder can update the value
+
+db.arrayUpdate.updateOne(
+  { _id: 3, skills: "python" }, // target the doc
+  { $set: { "skills.$[s]": "ruby" } },
+  { arrayFilters: [{ s: "python" }] },
+);
+
+//! update all the docs in which emp has worked in TCS, add a field bonus = 300
+
+//! in mongodb, on arrays we can d the following things
+//? update the first matched occurrence -> "$"
+//? update the complete array -> $[]
+//? update only the matched occurrence -> "$[variableName]"
+
+db.users.findOne(
+  { experience: { $elemMatch: { company: "TCS" } } },
+  { "user-name": 1 },
+);
+
+db.users.updateOne(
+  { experience: { $elemMatch: { company: "TCS" } } },
+  { $set: { "experience.$.isActive": true } },
+);
+
+db.workHistory.insertMany([
+  {
+    name: "varun",
+    id: 1,
+    exp: [
+      { company: "google", years: 2 }, // p1
+      { company: "yahoo", years: 1 },
+      { company: "google", years: 0.6 }, // p2
+    ],
+  },
+  {
+    name: "sri",
+    id: 2,
+    exp: [
+      { company: "wipro", years: 5 },
+      { company: "hcl", years: 3 },
+      { company: "google", years: 1 }, // p1
+    ],
+  },
+  {
+    name: "sirisha",
+    id: 3,
+    exp: [
+      { company: "oracle", years: 1 },
+      { company: "google", years: 2 }, // p1
+      { company: "wipro", years: 2 },
+      { company: "google", years: 0.1 }, // p2
+    ],
+  },
+]);
+
+/////// ! add intern:true, who worked in google and years is less than 1year
+
+db.workHistory.updateMany(
+  { exp: { $elemMatch: { company: "google" } } },
+  { $set: { "exp.$.intern": true } },
+);
+
+//? $ will only update the p1 placeholder
+
+db.workHistory.insertMany([
+  {
+    name: "varun",
+    id: 1,
+    exp: [
+      { company: "google", years: 2 },
+      { company: "yahoo", years: 1 },
+      { company: "google", years: 0.6 },
+    ],
+  },
+  {
+    name: "sri",
+    id: 2,
+    exp: [
+      { company: "wipro", years: 5 }, // p
+      { company: "hcl", years: 3 },
+      { company: "google", years: 1 },
+    ],
+  },
+  {
+    name: "sirisha",
+    id: 3,
+    exp: [
+      { company: "oracle", years: 1 },
+      { company: "google", years: 2 },
+      { company: "wipro", years: 2 }, // p
+      { company: "google", years: 0.1 },
+    ],
+  },
+]);
+
+db.workHistory.updateMany(
+  { exp: { $elemMatch: { company: "wipro" } } },
+  { $set: { "exp.$[].incentive": "2000 given by wipro" } },
+);
+
+db.workHistory.insertMany([
+  {
+    name: "varun",
+    id: 1,
+    exp: [
+      { company: "google", years: 2 },
+      { company: "yahoo", years: 1 },
+      { company: "google", years: 0.6 }, // p
+    ],
+  },
+  {
+    name: "sri",
+    id: 2,
+    exp: [
+      { company: "wipro", years: 5 },
+      { company: "hcl", years: 3 },
+      { company: "google", years: 1 },
+    ],
+  },
+  {
+    name: "sirisha",
+    id: 3,
+    exp: [
+      { company: "oracle", years: 1 },
+      { company: "google", years: 2 },
+      { company: "wipro", years: 2 },
+      { company: "google", years: 0.1 }, // p
+    ],
+  },
+]);
+//! add wfh:true, who worked in google and years is less than 1year
+db.workHistory.updateMany(
+  { exp: { $elemMatch: { company: "google" } } },
+  {
+    $set: { "exp.$[e].wfh": true }, //? e is all the placeholder objects
+  },
+  {
+    arrayFilters: [{ "e.years": { $lt: 1 } }],
+  },
 );
