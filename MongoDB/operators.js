@@ -754,10 +754,13 @@ db.arrayUpdate.updateOne(
 
 //! update all the docs in which emp has worked in TCS, add a field bonus = 300
 
+// [".net", "django", "ai/ml", "rest_api", "django"]
 //! in mongodb, on arrays we can d the following things
 //? update the first matched occurrence -> "$"
+// [".net", "replaced", "ai/ml", "rest_api", "django"]
 //? update the complete array -> $[]
 //? update only the matched occurrence -> "$[variableName]"
+// [".net", "replaced", "ai/ml", "rest_api", "replaced"]
 
 db.users.findOne(
   { experience: { $elemMatch: { company: "TCS" } } },
