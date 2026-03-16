@@ -172,3 +172,132 @@ db.emp.aggregate([
     },
   },
 ]);
+
+///? $unwind -> it is used to remove to the array (used to flatten the array)
+db.collection_name.aggregate([
+  {
+    $unwind: "$fieldName",
+  },
+]);
+
+//! show the count of emp in each skills. in descending order
+db.emp.aggregate([
+  {
+    $unwind: "$skills",
+  },
+  {
+    $group: {
+      _id: "$skills",
+      count: { $sum: 1 },
+    },
+  },
+  {
+    $sort: {
+      _id: 1,
+    },
+  },
+]);
+
+db.collection_name.aggregate([
+  {
+    $sort: { fieldName: 1 / -1 },
+  },
+]);
+
+db.collection_name.aggregate([
+  {
+    $skip: number,
+  },
+]);
+
+db.collection_name.aggregate([
+  {
+    $limit: number,
+  },
+]);
+
+//! $sort, $skip, $limit
+
+//! show the count second highest  skills
+db.emp.aggregate([
+  { $unwind: "$skills" },
+  {
+    $group: {
+      _id: "$skills",
+      count: { $sum: 1 },
+    },
+  },
+  {
+    $sort: { count: -1 },
+  },
+  { $skip: 1 },
+  { $limit: 1 },
+]);
+
+//! show all the names and age of emp who are clerk
+db.emp.aggregate([
+  {
+    $project: {
+      empName: 1,
+      age: 1,
+      _id: 0,
+      job: 1,
+    },
+  },
+  { $match: { job: "clerk" } },
+]);
+
+//! show the maximumSalary in each dept along with emp names
+//? (use (array op))
+db.emp.aggregate([
+  {
+    $group: {
+      _id: "$deptNo",
+      maxSal: { $max: "$sal" },
+      employeeNames: { $push: "$empName" },
+    },
+  }, //s1
+]);
+
+//! show the maximumSalary in each dept along with emp names and their jobs
+//? (use (array op))
+db.emp.aggregate([
+  {
+    $group: {
+      _id: "$deptNo",
+      maxSal: { $max: "$sal" },
+      employeeNames: { $push: "$empName" },
+      employeeJobs: { $addToSet: "$job" },
+    },
+  }, //s1
+]);
+
+//! show the emp names (in ascending order) and annualSalary of employees who have either letter "a" or "n" in their name, grouped by job, with annual salary greater than 22000
+// addFields, group, sort, match, project
+
+// match (a or n) -<  addF  -<  match (annualSal) -< group -< project
+
+db.emp.aggregate([
+  {
+    $match: {
+      empName: { $regex: /[an]/ },
+    },
+  },
+  {
+    $addFields: {
+      annualSalary: { $multiply: ["$sal", 12] },
+    },
+  },
+  {
+    $match: {
+      annualSalary: { $gt: 22000 },
+    },
+  },
+  {
+    $group: {
+      _id: "$job",
+      empName: { $push: "$empName" },
+      anSal: { $push: "$annualSalary" },
+    },
+  },
+]);
