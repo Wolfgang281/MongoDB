@@ -276,8 +276,8 @@ db.collection_name.aggregate([
   {
     $lookup: {
       from: "otherCollectionName", //& foreign collection
-      localField: "fieldName", // field from input documents
-      foreignField: "fieldName", // field from "from" collection
+      localField: "fieldName", // the key name of the local collection which holds the common value
+      foreignField: "fieldName", // the key of the foreign collection which holds the common value
       as: "outputArrayFieldName", // output array field, normally same as localField
     },
   },

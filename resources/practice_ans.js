@@ -307,3 +307,490 @@ db.emp.aggregate([
     $match: { anSal: { $gt: 28000 } }, // s3
   },
 ]);
+
+//! show each employee names and their skills count as totalSkills
+db.emp.aggregate([
+  {
+    $project: {
+      empName: 1,
+      _id: 0,
+      totalSkills: { $size: "$skills" },
+    },
+  },
+]);
+//TODO: ifNull
+
+//! / count emp by contractType
+db.emp.aggregate([
+  {
+    $group: {
+      _id: "$contractType",
+      count: { $sum: 1 },
+    },
+  },
+  {
+    $project: {
+      type: "$_id",
+      _id: 0,
+      count: 1,
+    },
+  },
+]);
+
+//? find avg totalHrsWorked by job role
+db.emp.aggregate([
+  {
+    $group: {
+      _id: "$job",
+      averageTotalHrsWorked: { $avg: "$totalHoursWorked" },
+    },
+  },
+  {
+    $project: {
+      job: "$_id",
+      averageTotalHrsWorked: 1,
+      _id: 0,
+    },
+  },
+]);
+
+// find max and min salary in each dept
+db.emp.aggregate([
+  {
+    $group: {
+      _id: "$deptNo",
+      maxSal: { $max: "$sal" },
+      minSal: { $min: "$sal" },
+      count: { $sum: 1 },
+    },
+  },
+]);
+
+//! find the highest bonus in each job category
+
+//! show the names of each employee for each department along with jobs.
+db.emp.aggregate([
+  {
+    $group: {
+      _id: "$deptNo",
+      names: { $push: "$empName" },
+      jobs: { $addToSet: "$job" },
+    },
+  },
+  {
+    $project: {
+      dept: "$_id",
+      names: 1,
+      jobs: 1,
+      _id: 0,
+    },
+  },
+]);
+
+//! show emp name and job in each department only if count is greater than 3 per department
+db.emp.aggregate([
+  {
+    $group: {
+      _id: "$deptNo",
+      names: { $push: "$empName" },
+      count: { $sum: 1 },
+    },
+  },
+  {
+    $match: {
+      count: { $gt: 3 },
+    },
+  },
+]);
+
+//! using $match before $group stage -> this will act on documents
+//! using $match after group stage -> this will act on grouped documents
+
+//! show total expenses made by the company per month (calculate sum of salary for all emp)
+db.emp.aggregate([
+  {
+    $group: {
+      _id: null,
+      //& if we want to group all the documents under one category use null in _id
+      count: { $sum: 1 },
+      totalExpenses: { $sum: "$sal" },
+    },
+  },
+  {
+    $project: {
+      totalExpenses: 1,
+      _id: 0,
+    },
+  },
+]);
+
+//! display all the emp names and their salary in descending order
+db.emp.aggregate([
+  {
+    $sort: {
+      sal: -1,
+      empName: 1, //! if two or more emp have same salary, then sorting will be based on emp names. sorting based on empName will only be there if two or more docs will have same salary
+    },
+  },
+  {
+    $project: {
+      _id: 0,
+      empName: 1,
+      sal: 1,
+    },
+  },
+]);
+
+//! display the name and salary of highest paid emp
+db.emp.aggregate([
+  {
+    $sort: { sal: -1 },
+  },
+  {
+    $limit: 1,
+  },
+  {
+    $project: {
+      sal: 1,
+      empName: 1,
+      _id: 0,
+    },
+  },
+]);
+
+//! display the name and salary of third highest paid emp
+db.emp.aggregate([
+  {
+    $sort: { sal: -1 },
+  },
+  // {
+  //   $skip: 2,
+  // },
+  // {
+  //   $limit: 1,
+  // },
+  {
+    $project: {
+      sal: 1,
+      empName: 1,
+      _id: 0,
+    },
+  },
+]);
+
+// highest -> king
+// second highest -> scott ford
+// third highest ->  jones
+
+//! display the name and salary of third highest paid emp -> group (sal)
+db.emp.aggregate([
+  {
+    $group: {
+      _id: "$sal",
+      count: { $sum: 1 },
+      names: { $push: "$empName" },
+    },
+  },
+  { $sort: { _id: -1 } },
+  { $skip: 2 },
+  { $limit: 1 },
+]);
+
+//! display the name and salary of second lowest paid emp -> group (sal)
+
+//! get top 3 department names by budget
+db.dept.aggregate([
+  {
+    $group: {
+      _id: "$budget",
+      name: { $push: "$dName" },
+    },
+  },
+  { $sort: { _id: -1 } },
+  { $limit: 3 },
+]);
+
+//! get emp names ranked 4 to 7 by salary
+/* 
+blake', sal: 2850 },
+  { empName: 'clark', sal: 2450 },
+  { empName: 'allen', sal: 1600 },
+  { empName: 'turner
+
+
+*/
+
+db.emp.aggregate([
+  {
+    $group: {
+      _id: "$sal",
+      name: { $push: "$empName" },
+    },
+  },
+  { $sort: { _id: -1 } },
+  { $skip: 3 },
+  { $limit: 4 },
+]);
+
+//! show first 3 characters of empName
+// ==> $substrCP
+db.emp.aggregate([
+  {
+    $project: {
+      firstThreeChars: { $substrCP: ["$empName", 0, 3] },
+      _id: 0,
+    },
+  },
+]);
+//  $substrCP: ["$fieldName", startingIdx, count]
+
+//! show Dname in uppercase
+db.dept.aggregate([
+  {
+    $project: {
+      name: { $toUpper: "$dName" },
+      _id: 0,
+    },
+  },
+]);
+
+db.emp.aggregate([
+  {
+    $match: { empName: "WARD" },
+  },
+  {
+    $unwind: "$skills",
+  },
+  {
+    $project: { empName: 1, _id: 0, skills: 1 },
+  },
+]);
+
+//! count total unique skills in the company
+db.emp.aggregate([
+  { $unwind: "$skills" },
+  {
+    $group: {
+      _id: "$skills",
+    },
+  },
+  {
+    $group: {
+      _id: null,
+      totalUniqueSkills: { $sum: 1 },
+    },
+  },
+  { $project: { _id: 0 } },
+]);
+
+// count how many emp have office equipments
+db.emp.aggregate([
+  { $unwind: "$officeEquipment" },
+  {
+    $group: {
+      _id: "$officeEquipment",
+      count: { $sum: 1 },
+      empNames: { $push: "$empName" },
+    },
+  },
+]);
+
+db.books.insertMany([
+  {
+    _id: "B123",
+    name: "the alchemist",
+    pages: 200,
+    price: 340,
+    authorId: "PC1",
+    detailsOfAuthor: [{ _id: "PC1", name: "Paulo" }],
+  },
+  {
+    _id: "H234",
+    name: "Harry Potter",
+    pages: 300,
+    price: 700,
+    authorId: "JKR",
+  },
+]);
+
+db.authors.insertMany([
+  {
+    _id: "PC1",
+    name: "Paulo",
+  },
+  {
+    _id: "JKR",
+    name: "JK Rowling",
+  },
+]);
+
+// {name:"b1", authorName:"a1"}
+
+db.books.aggregate([
+  {
+    $lookup: {
+      from: "authors",
+      foreignField: "",
+      localField: "",
+      as: "",
+    },
+  },
+]);
+
+//! display al the details along with the details of the author
+db.books.aggregate([
+  {
+    $lookup: {
+      from: "authors",
+      foreignField: "_id",
+      localField: "authorId",
+      as: "authorId", // here we name same as local field
+    },
+  },
+  {
+    $unwind: "$authorId",
+  },
+]);
+
+//! display all the details of the book alchemist along with the details of the author name
+
+db.books.aggregate([
+  {
+    $match: { name: "the alchemist" },
+  },
+  {
+    $lookup: {
+      from: "authors",
+      foreignField: "_id",
+      localField: "authorId",
+      as: "authorId",
+    },
+  },
+]);
+
+//! display all the emp names and their working locations
+db.emp.aggregate([
+  {
+    $lookup: {
+      from: "dept",
+      foreignField: "dept",
+      localField: "deptNo",
+      as: "deptNo",
+    },
+  },
+  { $unwind: "$deptNo" },
+  { $project: { empName: 1, location: "$deptNo.loc", _id: 0 } },
+]);
+
+//! For each employee, show their name, department name and location
+db.emp.aggregate([
+  {
+    $lookup: {
+      from: "dept",
+      foreignField: "dept",
+      localField: "deptNo",
+      as: "deptNo",
+    },
+  },
+  { $unwind: "$deptNo" },
+  {
+    $project: {
+      empName: 1,
+      location: "$deptNo.loc",
+      dName: "$deptNo.dName",
+      _id: 0,
+      "deptNo.dept": 1,
+    },
+  },
+]);
+
+db.dept.aggregate([
+  {
+    $lookup: {
+      from: "emp",
+      foreignField: "deptNo",
+      localField: "dept",
+      as: "dept",
+    },
+  },
+  {
+    $unwind: {
+      path: "$dept",
+      preserveNullAndEmptyArrays: true,
+    },
+  },
+  {
+    $project: {
+      loc: 1,
+      dName: 1,
+      "dept.empName": 1,
+      _id: 0,
+      "dept.deptNo": 1,
+    },
+  },
+]);
+
+{
+  $unwind: "$fieldname";
+}
+
+{
+  $unwind: {
+    path: "$fieldname";
+    preserveNullAndEmptyArrays: boolean;
+  }
+}
+
+//! to get the annual sal (12*sal + bonus + comm)
+db.emp.aggregate([
+  {
+    $addFields: {
+      totalAnSal: {
+        $add: [
+          { $multiply: ["$sal", 12] },
+          { $ifNull: ["$bonus", 0] },
+          // "$bonus",
+          { $ifNull: ["$comm", 0] },
+          // "$comm",
+        ],
+      },
+    },
+  },
+  {
+    $project: { totalAnSal: 1, _id: 0 },
+  },
+]);
+
+{
+  $ifNull: ["$bonus", 0];
+}
+
+// {
+//   $addFields: {
+//     keyname: {
+//       $add: [{monthly * 12} ,{ comm} , {bonus}];
+//     }
+//   }
+// }
+
+//! display all the empNames along with their month of joining
+db.emp.aggregate([
+  {
+    $addFields: {
+      month: { $month: "$hireDate" },
+      year: { $year: "$hireDate" },
+      day: { $dayOfMonth: "$hireDate" },
+    },
+  },
+  {
+    $project: {
+      empName: 1,
+      _id: 0,
+      month: 1,
+      year: 1,
+      day: 1,
+    },
+  },
+]);
+
+db.movies.find({ year: { $gt: 2013 } }).explain("executionStats");
